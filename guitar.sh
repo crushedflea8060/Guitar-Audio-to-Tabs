@@ -19,7 +19,7 @@ pyenv install -s 3.11.14
 # --- BasicPitch ---
 if ! pyenv versions | grep -q basicpitchrunner; then
     pyenv virtualenv 3.11.14 basicpitchrunner
-    PYENV_VERSION=basicpitchrunner pip install -q --upgrade pip setuptools wheel
+    PYENV_VERSION=basicpitchrunner pip install -q pip setuptools wheel
     PYENV_VERSION=basicpitchrunner pip install -q basic-pitch
 fi
 
@@ -30,7 +30,7 @@ midioutput="${noext}.mid"
 # --- Tuttut ---
 if ! pyenv versions | grep -q myenv311; then
     pyenv virtualenv 3.11.14 myenv311
-    PYENV_VERSION=myenv311 pip install -q --upgrade pip setuptools wheel
+    PYENV_VERSION=myenv311 pip install -q pip setuptools wheel
     PYENV_VERSION=myenv311 pip install -q tuttut pretty_midi
 fi
 
