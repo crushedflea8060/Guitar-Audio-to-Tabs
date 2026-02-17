@@ -3,8 +3,7 @@ export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
 pyenv -s install 3.11.14 
-file=$1
-out=$2
+file="$1"
 newext=".mid"
 noext="${file%.*}"
 midioutput="${noext}${newext}"
