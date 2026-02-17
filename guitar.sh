@@ -1,36 +1,45 @@
 #!/bin/bash
+
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <audiofile>"
+    exit 1
+fi
+
+file="$1"
+noext="${file%.*}"
+
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
-pyenv -s install 3.11.14 
-file="$1"
-newext=".mid"
-noext="${file%.*}"
-midioutput="${noext}${newext}"
 
+pyenv install -s 3.11.14
 
+# --- BasicPitch ---
+if ! pyenv versions | grep -q basicpitchrunner; then
+    pyenv virtualenv 3.11.14 basicpitchrunner
+    PYENV_VERSION=basicpitchrunner pip install -q --upgrade pip setuptools wheel
+    PYENV_VERSION=basicpitchrunner pip install -q basic-pitch
+fi
 
-# --- BasicPitch environment - yes I was assisted by a little chatgpt for this >
-pyenv virtualenv -f 3.11.14 basicpitchrunner
-PYENV_VERSION=basicpitchrunner pip install -q --upgrade pip setuptools wheel
-PYENV_VERSION=basicpitchrunner pip install -q basic-pitch
-PYENV_VERSION=basicpitchrunner basic-pitch . $file
+PYENV_VERSION=basicpitchrunner basic-pitch . "$file"
 
-pyenv uninstall -f basicpitchrunner
+midioutput="${noext}.mid"
 
-# --- Tuttut environment - in my defense working with pyenv is hell---
-pyenv virtualenv -f 3.11.14 myenv311
-PYENV_VERSION=myenv311 pip install -q --upgrade pip setuptools wheel
-PYENV_VERSION=myenv311 pip install -q tuttut
-PYENV_VERSION=myenv311 pip install uv
-PYENV_VERSION=myenv311 mkdir ./midis
-PYENV_VERSION=myenv311 mkdir ./tabs
-PYENV_VERSION=myenv311 mv $midioutput ./midis
-PYENV_VERSION=myenv311 uv run --with pretty_midi --with tuttut -- python -m tuttut.midi_tabs_cli $noext 
+# --- Tuttut ---
+if ! pyenv versions | grep -q myenv311; then
+    pyenv virtualenv 3.11.14 myenv311
+    PYENV_VERSION=myenv311 pip install -q --upgrade pip setuptools wheel
+    PYENV_VERSION=myenv311 pip install -q tuttut pretty_midi
+fi
 
-pyenv uninstall -f myenv311
+mkdir -p ./midis
+mkdir -p ./tabs
+
+mv "$midioutput" ./midis
+
+PYENV_VERSION=myenv311 python -m tuttut.midi_tabs_cli "$noext"
 
 echo "Finished."
 ls
-
-
