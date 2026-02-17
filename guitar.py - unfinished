@@ -1,0 +1,32 @@
+import subprocess
+import os
+import sys
+import shlex
+##used
+def create_pyenv_virtualenv(python_version, env_name, project_dir="."):
+  try")
+        subprocess.check_call(['pyenv', 'install', python_version])
+    except subprocess.CalledProcessError as e:
+        print(f"Could not install Python version {python_version}. It might already be installed. Error: {e}")
+    try:
+        # Create the virtual environment
+        subprocess.check_call(['pyenv', 'virtualenv', python_version, env_name])
+    except subprocess.CalledProcessError as e:
+        print(f"Could not create virtual environment {env_name}. It might already exist. Error: {e}")
+
+    try:
+        # Set the virtual environment as the local version for the directory
+        subprocess.check_call(['pyenv', 'local', env_name], cwd=project_dir)
+    except subprocess.CalledProcessError as e:
+        print(f"Could not set local version. Error: {e}")
+
+if __name__ == "__main__":
+    desired_python_version = "3.11.14" 
+    environment_name = "my_env311"
+    
+    create_pyenv_virtualenv(desired_python_version, environment_name, project_dir=".")
+    os.system("PYENV_VERSION=my_env311 pip install -q --upgrade pip setuptools wheel")
+    os.system("PYENV_VERSION=my_env311 pip install -q tuttut")
+    os.system("pyenv uninstall -f myenv311")
+  ##to be continued
+
