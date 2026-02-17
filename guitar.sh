@@ -1,8 +1,8 @@
 #!/bin/bash
-pyenv -s install 3.11.14 
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
+pyenv -s install 3.11.14 
 file=$1
 out=$2
 newext=".mid"
